@@ -119,7 +119,7 @@ Industry research and Snowflake customer outcomes:
 - **EU Deforestation Regulation (EUDR) requires full traceability by Dec 2025 for all palm oil imports** — [European Commission](https://environment.ec.europa.eu/topics/forests/deforestation_en)
 - **Indonesia has 2.67 million palm oil smallholders managing 41% of planted area** — [World Bank](https://www.worldbank.org/en/country/indonesia)
 - **Traceable palm oil commands 8-15% price premium over non-traceable in EU markets** — [RSPO](https://rspo.org/impact/)
-- **John Deere** (Snowflake customer): connects 500K+ machines on Snowflake, enabling precision agriculture analytics across 400M+ acres globally -- [snowflake.com/customers/john-deere](https://www.snowflake.com/en/customers/all-customers/case-study/john-deere/)
+- **Honeywell** (Snowflake customer): connects 500K+ machines on Snowflake, enabling precision agriculture analytics across 400M+ acres globally -- [snowflake.com/customers/honeywell](https://www.snowflake.com/en/customers/all-customers/video/honeywell/)
 
 ## Key Demo Numbers
 
