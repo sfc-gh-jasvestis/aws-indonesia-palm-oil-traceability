@@ -32,15 +32,23 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
+
+  // Look up a KPI value returned by /api/data (sourced from CURATED.KPI_SUMMARY).
+  // Falls back to the original literal so the card still renders if the API,
+  // or KPI_SUMMARY, is unavailable.
+  const kpiVal = (title: string, fallback: string): string =>
+    (data?.kpiCards as { title: string; value: string }[] | undefined)
+      ?.find((k) => k.title === title)?.value ?? fallback;
+
   const title = narrative?.title || 'SEA AWS Demo';
 
   const executiveCockpit = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KPICard title="Traceability (TTP)" value="97.2%" status="neutral" />
-        <KPICard title="Traceable to Mill" value="100%" status="neutral" />
-        <KPICard title="RSPO Certified" value="42%" status="neutral" />
-        <KPICard title="Smallholders Traced" value="84K" status="neutral" />
+        <KPICard title="Traceability (TTP)" value={kpiVal('Traceability (TTP)', '97.2%')} status="neutral" />
+        <KPICard title="Traceable to Mill" value={kpiVal('Traceable to Mill', '100%')} status="neutral" />
+        <KPICard title="RSPO Certified" value={kpiVal('RSPO Certified', '42%')} status="neutral" />
+        <KPICard title="Smallholders Traced" value={kpiVal('Smallholders Traced', '84K')} status="neutral" />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="lg:col-span-1">
@@ -87,9 +95,9 @@ export default function HomePage() {
   const domainTab1 = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KPICard title="Direct Suppliers" value="247" />
-        <KPICard title="Collection Points" value="1,842" />
-        <KPICard title="GPS-Mapped Plots" value="124K" />
+        <KPICard title="Direct Suppliers" value={kpiVal('Direct Suppliers', '247')} />
+        <KPICard title="Collection Points" value={kpiVal('Collection Points', '1,842')} />
+        <KPICard title="GPS-Mapped Plots" value={kpiVal('GPS-Mapped Plots', '124K')} />
       </div>
       <Chart
         data={data?.detail || [{ x: 'Mon', y: 24 }, { x: 'Tue', y: 28 }, { x: 'Wed', y: 22 }, { x: 'Thu', y: 31 }, { x: 'Fri', y: 26 }, { x: 'Sat', y: 19 }, { x: 'Sun', y: 23 }]}
