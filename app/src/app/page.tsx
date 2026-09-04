@@ -54,6 +54,7 @@ export default function HomePage() {
         <div className="lg:col-span-1">
           <GeoMap
             country="indonesia"
+            labels={{ entity: 'Mills', event: 'Chain of Custody', alert: 'Chain Gaps' }}
             regions={data?.regions}
             markers={[{"label": "Medan", "value": "N.Sumatra: 847 estates", "color": "green", "size": "lg"}, {"label": "Palembang", "value": "S.Sumatra: EUDR alert", "color": "amber", "size": "md"}, {"label": "Pontianak", "value": "W.Kalimantan: 412 mills", "color": "green", "size": "md"}, {"label": "Balikpapan", "value": "E.Kalimantan: replanting", "color": "blue", "size": "md"}, {"label": "Jakarta", "value": "Trading desk", "color": "blue", "size": "sm"}]}
             routes={[{"from": "Medan", "to": "Jakarta", "color": "#10B981"}]}
@@ -84,8 +85,13 @@ export default function HomePage() {
         columns={[
           { key: 'id', header: '#' },
           { key: 'name', header: 'Mill' },
+          { key: 'region', header: 'Region' },
           { key: 'status', header: 'TTP Status' },
-          { key: 'value', header: 'Coverage %' },
+          { key: 'm1', header: 'Coverage %' },
+          { key: 'm2', header: 'Rspo Certified' },
+          { key: 'm3', header: 'Traceable to Mill' },
+          { key: 'events', header: 'Chain of Custody' },
+          { key: 'alerts', header: 'Chain Gaps' },
         ]}
         data={data?.entities || []}
         title="Mill Traceability Status"
