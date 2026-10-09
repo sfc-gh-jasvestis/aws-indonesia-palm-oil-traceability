@@ -1,0 +1,75 @@
+{
+  "title": "Palm Oil Mill-to-Refinery Traceability",
+  "duration": "6 minutes",
+  "thesis": "Snowflake turns daily crude palm oil (CPO) custody transfers from a fictional Indonesian mill network into traceability-to-plantation and flag-precision KPIs, 7-day custody-break risk scores, mass-balance variance anomalies and grounded AI answers, all on curated dynamic tables.",
+  "tabs": [
+    {
+      "id": "executive-cockpit",
+      "persona": { "name": "Sari Wulandari", "role": "Head of Supply Chain Traceability (fictional)", "avatar": "" },
+      "talking_points": [
+        "Traceability to plantation, CPO custody transfers, CPO dispatched and custody flag precision for 40 mills across 8 Indonesian cities and 5 sourcing models.",
+        "Every KPI is a numerator over a denominator in a curated dynamic table, so it can be traced back to mill-day rows.",
+        "The custody-signal chart shows which checks lead to confirmed custody breaks and which mostly produce false-positive flags."
+      ],
+      "show": ["KPI cards", "Daily CPO custody transfers and custody flags", "Flags by custody signal", "Mill table"],
+      "call_out": "One governed set of chain-of-custody KPIs, traceable to source rows",
+      "transition": { "next_tab": "predictive", "line": "Which mills should the traceability team visit first?" }
+    },
+    {
+      "id": "predictive",
+      "persona": { "name": "Agus Pratama", "role": "Custody Analyst (fictional)", "avatar": "" },
+      "talking_points": [
+        "Snowflake ML classification scores each mill's probability of a confirmed custody break in the next 7 days.",
+        "The holdout line shows precision and recall on the most recent labelled days, against the base rate.",
+        "Anomaly detection flags mass-balance variance outliers per mill, and the forecast projects network-wide CPO custody transfers for 14 days."
+      ],
+      "show": ["Holdout metrics", "Risk by mill", "Dispatch forecast", "Mass-balance variance anomalies"],
+      "call_out": "Honest, evaluated ML inside the data platform",
+      "transition": { "next_tab": "planning", "line": "Is the supplier registry keeping up?" }
+    },
+    {
+      "id": "planning",
+      "persona": { "name": "Agus Pratama", "role": "Custody Analyst (fictional)", "avatar": "" },
+      "talking_points": [
+        "Mass-balance reconciliation rate, FFB supplier link coverage and supplier verifications still pending.",
+        "The scatter compares each mill's reconciliation rate with its confirmed custody breaks."
+      ],
+      "show": ["Registry KPIs", "Reconciliation rate vs confirmed breaks"],
+      "call_out": "Find the gaps in supplier links before a refinery buyer asks for them",
+      "transition": { "next_tab": "live", "line": "What happens when a transfer arrives out of tolerance?" }
+    },
+    {
+      "id": "live",
+      "persona": { "name": "Agus Pratama", "role": "Custody Analyst (fictional)", "avatar": "" },
+      "talking_points": [
+        "CPO custody-transfer events land in RAW.LIVE_TRANSFERS: simulated in Snowflake, or from Amazon Data Firehose through S3 and Snowpipe in the AWS build.",
+        "FLAG events (a transfer whose mass-balance variance is out of tolerance) are logged by the alert, which emails the team."
+      ],
+      "show": ["Transfer events loaded", "Latest 25 custody-transfer events", "Custody alert log"],
+      "call_out": "From mill dispatch to alert in one platform",
+      "transition": { "next_tab": "ask-ai", "line": "Now ask the data directly." }
+    },
+    {
+      "id": "ask-ai",
+      "persona": { "name": "Sari Wulandari", "role": "Head of Supply Chain Traceability (fictional)", "avatar": "" },
+      "talking_points": [
+        "The Cortex Agent answers with generated SQL over the semantic view and cites the synthetic chain-of-custody SOPs by ID.",
+        "The action memo is drafted only from KPI, mill, custody-signal and risk rows; custody checks are demo signals, not audit or certification verdicts."
+      ],
+      "show": ["Agent answer with SQL and SOP citations", "Action memo"],
+      "call_out": "Grounded answers, never invented numbers",
+      "transition": { "next_tab": "architecture", "line": "Here is how it is built." }
+    },
+    {
+      "id": "architecture",
+      "persona": { "name": "Sari Wulandari", "role": "Head of Supply Chain Traceability (fictional)", "avatar": "" },
+      "talking_points": [
+        "Both builds share the same core: seeded data, dynamic tables, Snowflake ML, Cortex Search, semantic view, agent, alert and task graph.",
+        "The AWS build adds Amazon Data Firehose, S3 and Snowpipe ingestion, a Bedrock memo and a QuickSight dashboard with an Amazon Q topic."
+      ],
+      "show": ["Current build diagram", "Other build diagram", "Implementation status"],
+      "call_out": "Same core, two deployment options",
+      "transition": { "next_tab": "", "line": "Questions?" }
+    }
+  ]
+}
