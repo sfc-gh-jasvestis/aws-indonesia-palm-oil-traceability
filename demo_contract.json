@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "repo": "aws-indonesia-palm-oil-traceability",
+  "operation": "on-demand",
+  "data_classification": "synthetic demonstration only",
+  "currency": "none (volumes in tonnes of crude palm oil)",
+  "grains": {
+    "RAW.MILLS": "one row per mill (city x sourcing model)",
+    "RAW.MILL_DAILY": "one row per mill per day (90 days)",
+    "RAW.SUPPLIER_REGISTRY": "one row per mill (FFB supplier registry snapshot)",
+    "CURATED.PERFORMANCE_SUMMARY": "one row per mill",
+    "CURATED.TREND_ANALYSIS": "one row per day",
+    "CURATED.SIGNAL_SUMMARY": "one row per custody signal",
+    "CURATED.KPI_SUMMARY": "one row per KPI",
+    "ML.CUSTODY_RISK_SCORES": "one row per mill (latest day)"
+  },
+  "metrics": {
+    "Traceability to Plantation": "100 * SUM(TRACED_TONNES) / SUM(CPO_TONNES)",
+    "CPO Custody Transfers": "SUM(DISPATCH_COUNT)",
+    "CPO Dispatched (kt)": "SUM(CPO_TONNES) / 1e3",
+    "Custody Flags": "SUM(FLAG_COUNT)",
+    "Confirmed Custody Breaks": "SUM(CONFIRMED_COUNT)",
+    "Flag Precision": "100 * SUM(CONFIRMED_COUNT) / SUM(FLAG_COUNT)",
+    "Lots Held at Refinery": "SUM(LOTS_HELD)",
+    "Mass-Balance Reconciliation Rate": "100 * SUM(RECONCILIATION_RECEIVED) / SUM(RECONCILIATION_DUE)",
+    "Mills Monitored": "COUNT(RAW.MILLS)",
+    "Supplier Link Coverage": "100 * SUM(LEAST(ON_FILE_QTY, REQUIRED_QTY)) / SUM(REQUIRED_QTY)",
+    "Supplier Verifications Pending": "SUM(PENDING_QTY)",
+    "Registered FFB Suppliers": "SUM(REQUIRED_QTY)"
+  },
+  "chart_bindings": {
+    "daily_transfers": ["CURATED.TREND_ANALYSIS.METRIC_DATE", "DISPATCH_COUNT", "FLAG_COUNT"],
+    "flags_by_signal": ["CURATED.SIGNAL_SUMMARY.RISK_SIGNAL", "FLAG_COUNT", "CONFIRMED_COUNT"],
+    "reconciliation_vs_confirmed": ["CURATED.PERFORMANCE_SUMMARY.RECONCILIATION_PCT", "CONFIRMED_COUNT"],
+    "quicksight_custody_risk": ["ENTITY_ID", "MAX(BREAK_PROB_7D)"]
+  },
+  "freshness": "MAX(EVENT_DATE) is an observation watermark; requestedAt is not freshness",
+  "required_capabilities": {
+    "core_pipeline": "Curated KPIs reconcile to a RAW recomputation (run_core.py checks this on every build)",
+    "forecast_and_anomaly": "14-day network-wide CPO dispatch FORECAST; mass-balance variance ANOMALY_DETECTION (train 75 days, detect last 15)",
+    "search": "Cortex Search SEARCH.CUSTODY_SOP_SEARCH over synthetic chain-of-custody follow-up SOPs (one per sourcing model and custody signal)",
+    "semantic_analytics": "Semantic view APP.TRACEABILITY_ANALYTICS and Cortex Agent APP.TRACEABILITY_AGENT using analyst + search tools",
+    "grounded_ai": "Agent answers return generated SQL and SOP citations; the action memo uses only KPI, mill, custody-signal and risk rows",
+    "quicksight": "DIRECT_QUERY dashboard (mills, daily CPO custody transfers, confirmed custody breaks by mill, custody-break risk, transfer events loaded) over an existing Snowflake data source",
+    "quicksight_q": "Amazon Q topic over the curated datasets for natural-language questions",
+    "aws_ingestion": "Amazon Data Firehose (Direct PUT) of CPO custody-transfer events -> S3 (transfers/) -> Snowpipe AUTO_INGEST into RAW.LIVE_TRANSFERS",
+    "notifications": "APP.LIVE_TRANSFER_ALERT logs new FLAG events to APP.ALERT_LOG and emails via SYSTEM$SEND_EMAIL; alert and tasks suspended between demos",
+    "orchestration": "Task graph APP.TASK_REFRESH_CURATED -> APP.TASK_RESCORE_RISK run on demand (EXECUTE TASK)",
+    "app_deployment": "SPCS service APP.ID_PALM_OIL_TRACEABILITY_APP; routes /api/data, /api/ask, /api/agent",
+    "custody_risk_model": "Snowflake ML CLASSIFICATION of P(confirmed custody break in next 7 days) per mill, evaluated on an out-of-time holdout"
+  },
+  "builds": {
+    "snowflake": {
+      "database": "INDONESIA_PALM_OIL_TRACEABILITY_SNOWFLAKE",
+      "app_setting": "DEMO_PLATFORM=snowflake",
+      "memo": "Cortex AI_COMPLETE (claude-sonnet-4-5)",
+      "live_transfers": "APP.SIMULATE_TRANSFERS(n)"
+    },
+    "aws": {
+      "database": "INDONESIA_PALM_OIL_TRACEABILITY_AWS",
+      "app_setting": "DEMO_PLATFORM=aws",
+      "memo": "Amazon Bedrock Claude Sonnet 4.5 via APP.BEDROCK_GENERATE",
+      "capabilities": "see required_capabilities",
+      "live_transfers": "Amazon Data Firehose -> S3 -> Snowpipe"
+    }
+  }
+}
